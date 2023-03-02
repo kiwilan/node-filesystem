@@ -1,0 +1,67 @@
+{
+  "name": "@kiwilan/filesystem",
+  "type": "module",
+  "version": "0.0.1",
+  "description": "Node module to improve native filesystem with Laravel like helpers.",
+  "author": "Ewilan Rivière <ewilan.riviere@gmail.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/kiwilan/node-filesystem",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kiwilan/node-filesystem.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kiwilan/node-filesystem/issues"
+  },
+  "keywords": [
+    "node",
+    "filesystem",
+    "fs"
+  ],
+  "exports": {
+    ".": {
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "directories": {
+    "dist": "dist"
+  },
+  "scripts": {
+    "build": "tsup --clean",
+    "watch": "tsup --watch",
+    "lint": "eslint . --ignore-path .gitignore",
+    "lint:fix": "eslint . --fix --ignore-path .gitignore",
+    "test": "vitest",
+    "coverage": "vitest run --coverage",
+    "package": "pnpm build ; pnpm pack ; cp kiwilan-node-filesystem-*.tgz ~/kiwilan-node-filesystem-*.tgz"
+  },
+  "dependencies": {
+    "@fastify/cors": "^8.2.0",
+    "@fastify/env": "^4.2.0",
+    "@fastify/middie": "^8.1.0",
+    "chalk": "^5.2.0",
+    "commander": "^10.0.0",
+    "conf": "^11.0.1",
+    "esbuild": "^0.17.10",
+    "esbuild-plugin-pino": "^1.2.8",
+    "fastify": "^4.13.0",
+    "md5": "^2.3.0",
+    "ofetch": "^1.0.1",
+    "tiny-glob": "^0.2.9"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^0.35.3",
+    "@types/md5": "^2.3.2",
+    "@types/node": "^18.14.1",
+    "eslint": "^8.34.0",
+    "tsup": "^6.6.3",
+    "typescript": "^4.9.5"
+  }
+}

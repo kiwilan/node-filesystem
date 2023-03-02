@@ -1,0 +1,73 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "NPM update",
+      "type": "shell",
+      "command": "pnpm update --latest",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "silent",
+        "revealProblems": "onProblem",
+        "close": true
+      }
+    },
+    {
+      "label": "NPM install",
+      "type": "shell",
+      "command": "pnpm i",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "silent",
+        "revealProblems": "onProblem",
+        "close": true
+      }
+    },
+    {
+      "label": "NPM dev",
+      "type": "shell",
+      "command": "pnpm dev",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "silent",
+        "revealProblems": "onProblem",
+        "close": true
+      }
+    },
+    {
+      "label": "NPM build",
+      "type": "shell",
+      "command": "pnpm build",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "silent",
+        "revealProblems": "onProblem",
+        "close": true
+      }
+    },
+    {
+      "label": "NPM local package",
+      "type": "shell",
+      "command": "pnpm package",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "silent",
+        "revealProblems": "onProblem",
+        "close": true
+      }
+    },
+    {
+      "label": "NPM deploy",
+      "type": "shell",
+      "command": "pnpm build && npm publish --access public",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "silent",
+        "revealProblems": "onProblem",
+        "close": true
+      }
+    }
+  ]
+}
