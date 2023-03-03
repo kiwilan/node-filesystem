@@ -226,7 +226,7 @@ export class FsFileNative {
 
   public static async symlink(source: string, target: string): Promise<boolean> {
     try {
-      await symlink(target, target)
+      await symlink(source, target)
       return true
     }
     catch (error) {
