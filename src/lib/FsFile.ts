@@ -1,33 +1,32 @@
-import type { Dirent } from 'fs'
 import md5 from 'md5'
 import mime from 'mime-types'
 import type { GlobOptionsWithFileTypesUnset } from 'glob'
 import glob from 'glob'
-import { FileItem } from './FileItem'
-import type { FileContent } from './FileNative'
-import { FileNative } from './FileNative'
+import type { ReplaceInFileBulk } from '../types'
+import type { FileContent } from './FsFileNative'
+import { FsFileNative } from './FsFileNative'
+import { FsFileItem } from './FsFileItem'
 
-export class File {
+export class FsFile {
   /**
    * Determine if a file or directory exists.
    */
   public static async exists(path: string): Promise<boolean> {
-    const file = await FileNative.readFile(path)
-    return typeof file === 'string'
+    return await FsFileNative.exists(path)
   }
 
   /**
    * Get the contents of a file.
    */
-  public static async get(path: string): Promise<string | false> {
-    return await FileNative.readFile(path)
+  public static async get(path: string): Promise<string> {
+    return await FsFileNative.readFile(path)
   }
 
   /**
    * Get the contents of a file one line at a time.
    */
   public static async lines(path: string): Promise<string[] | false> {
-    const file = await FileNative.readFile(path)
+    const file = await FsFileNative.readFile(path)
     if (!file)
       return false
     const lines = file.split('\n')
@@ -39,7 +38,7 @@ export class File {
    * Get the hash of the file at the given path.
    */
   public static async hash(path: string): Promise<string | false> {
-    const content = await File.get(path)
+    const content = await this.get(path)
     if (!content)
       return false
 
@@ -50,7 +49,7 @@ export class File {
    * Write the contents of a file.
    */
   public static async put(path: string, contents: FileContent): Promise<boolean> {
-    const created = await FileNative.writeFile(path, contents)
+    const created = await FsFileNative.writeFile(path, contents)
     return typeof created === 'string'
   }
 
@@ -60,59 +59,91 @@ export class File {
   // public static async replace(path: string, content: string, mode: number | undefined): Promise<void> {
   // }
 
-  // /**
-  //  * Replace a given string within a given file.
-  //  */
   // public static async replaceInFile(search: string[] | string, replace: string[] | string, path: string): Promise<void> {
   // }
 
-  // /**
-  //  * Prepend to a file.
-  //  */
-  // public static async prepend(path: string, data: string): Promise<number> {
-  //   return 0
-  // }
+  /**
+   * Replace a given string within a given file.
+   */
+  public static async replaceInFile(path: string, str: string, replace: string): Promise<void> {
+    const isExists = await this.exists(path)
+    const stringExists = await this.stringExistsInFile(path, str)
 
-  // /**
-  //  * Append to a file.
-  //  */
-  // public static async append(path: string, data: string): Promise<number> {
-  //   return 0
-  // }
+    if (!isExists)
+      console.warn(`promise replaceInFile ${path} not found`)
+
+    if (!stringExists)
+      console.warn(`promise replaceInFile ${str} not found`)
+
+    const data = await this.get(path)
+    const result = data.replace(str, replace)
+    await this.put(path, result)
+  }
+
+  /**
+   * Replace a given string within a given file.
+   */
+  public static async replaceInFileBulk(fromPath: string, toPath: string, replace: ReplaceInFileBulk[]): Promise<void> {
+    if (!await this.exists(fromPath))
+      console.warn(`replaceInFile ${fromPath} not found`)
+
+    const data = await this.get(fromPath)
+
+    let current = data
+    replace.forEach((el) => {
+      current = current.replaceAll(el.from, el.to)
+    })
+
+    await this.put(toPath, current)
+  }
+
+  /**
+   * Prepend to a file.
+   */
+  public static async prepend(path: string, data: string): Promise<boolean> {
+    return await FsFileNative.prependFile(path, data)
+  }
+
+  /**
+   * Append to a file.
+   */
+  public static async append(path: string, data: string): Promise<boolean> {
+    return await FsFileNative.appendFile(path, data)
+  }
 
   /**
    * Set UNIX mode of a file or directory.
    */
   public static async chmod(path: string, mode = 777): Promise<boolean> {
-    return await FileNative.chmod(path, mode)
+    return await FsFileNative.chmod(path, mode)
   }
 
   /**
    * Delete the file at a given path.
    */
   public static async delete(paths: string | string[]): Promise<boolean> {
-    return await FileNative.rm(paths)
+    return await FsFileNative.rm(paths)
   }
 
   /**
    * Move a file to a new location.
    */
   public static async move(path: string, target: string): Promise<boolean> {
-    return await FileNative.rename(path, target)
+    return await FsFileNative.rename(path, target)
   }
 
   /**
    * Copy a file to a new location.
    */
   public static async copy(path: string, target: string): Promise<boolean> {
-    return await FileNative.copyFile(path, target)
+    return await FsFileNative.copyFile(path, target)
   }
 
   /**
    * Create a symlink to the target file or directory. On Windows, a hard link is created if the target is a file.
    */
   public static async link(target: string, link: string): Promise<boolean> {
-    return await FileNative.symlink(target, link)
+    return await FsFileNative.symlink(target, link)
   }
 
   // /**
@@ -125,7 +156,7 @@ export class File {
    * Extract the file name from a file path.
    */
   public static filename(path: string, withExtension = true): string {
-    const current = FileNative.basename(path)
+    const current = FsFileNative.basename(path)
     if (!withExtension)
       return current
 
@@ -139,15 +170,15 @@ export class File {
    * Extract the parent directory from a file path.
    */
   public static dirname(path: string): string {
-    const current = FileNative.basename(path)
-    return FileNative.basename(current)
+    const current = FsFileNative.basename(path)
+    return FsFileNative.basename(current)
   }
 
   /**
    * Extract the file extension from a file path.
    */
   public static extension(path: string): string | false {
-    const current = FileNative.basename(path)
+    const current = FsFileNative.basename(path)
     const ext = current.split('.')
     return ext.pop() || false
   }
@@ -169,19 +200,22 @@ export class File {
   /**
    * Get the file size of a given file.
    */
-  public static async size(path: string, humanReadble = false): Promise<number | string> {
-    if (humanReadble)
-      return await File.bytesHuman(path)
+  public static async size(path: string, humanReadable = false): Promise<number | string> {
+    if (humanReadable)
+      return await FsFileNative.bytesHuman(path)
 
-    const stats = await FileNative.stat(path)
-    return stats.size
+    const stats = await FsFileNative.stat(path)
+    return stats?.size || 0
   }
 
   /**
    * Get the file's last modification time.
    */
-  public static async lastModified(path: string): Promise<Date> {
-    const stats = await FileNative.stat(path)
+  public static async lastModified(path: string): Promise<Date | undefined> {
+    const stats = await FsFileNative.stat(path)
+    if (!stats)
+      return undefined
+
     return stats.mtime
   }
 
@@ -189,15 +223,15 @@ export class File {
    * Determine if the given path is a directory.
    */
   public static async isDirectory(directory: string): Promise<boolean> {
-    const stats = await FileNative.stat(directory)
-    return stats.isDirectory()
+    const stats = await FsFileNative.stat(directory)
+    return stats?.isDirectory() || false
   }
 
   /**
    * Determine if the given path is a directory that does not contain any other files or directories.
    */
   public static async isEmptyDirectory(directory: string, ignoreDotFiles = false): Promise<boolean> {
-    const files = await FileNative.readdir(directory)
+    const files = await FsFileNative.readdir(directory)
 
     if (!files)
       return false
@@ -207,7 +241,7 @@ export class File {
 
     if (ignoreDotFiles) {
       const filtered = files.filter((file) => {
-        return !file.name.startsWith('.')
+        return !file.startsWith('.')
       })
 
       return filtered.length === 0
@@ -220,22 +254,22 @@ export class File {
    * Determine if the given path is readable.
    */
   public static async isReadable(path: string): Promise<boolean> {
-    return await FileNative.access(path, { isReadable: true })
+    return await FsFileNative.access(path, { isReadable: true })
   }
 
   /**
    * Determine if the given path is writable.
    */
   public static async isWritable(path: string): Promise<boolean> {
-    return await FileNative.access(path, { isReadable: true, isWritable: true })
+    return await FsFileNative.access(path, { isReadable: true, isWritable: true })
   }
 
   /**
    * Determine if two files are the same by comparing their hashes.
    */
   public static async hasSameHash(firstFile: string, secondFile: string): Promise<boolean> {
-    const firstHash = await File.hash(firstFile)
-    const secondHash = await File.hash(secondFile)
+    const firstHash = await this.hash(firstFile)
+    const secondHash = await this.hash(secondFile)
 
     return firstHash === secondHash
   }
@@ -244,8 +278,8 @@ export class File {
    * Determine if the given path is a file.
    */
   public static async isFile(file: string): Promise<boolean> {
-    const stats = await FileNative.stat(file)
-    return stats.isFile()
+    const stats = await FsFileNative.stat(file)
+    return stats?.isFile() || false
   }
 
   /**
@@ -258,15 +292,15 @@ export class File {
   /**
    * Get an array of all files in a directory.
    */
-  public static async files(directory: string, hidden = false): Promise<FileItem[]> {
-    const files: FileItem[] = []
+  public static async files(directory: string, hidden = false): Promise<FsFileItem[]> {
+    const files: FsFileItem[] = []
 
-    const res = await FileNative.readdir(directory)
+    const res = await FsFileNative.readdir(directory)
     if (!res)
       throw new Error(`Could not read directory: ${directory}`)
 
-    for (const dirent of res) {
-      const file = FileItem.makeFromDirent(dirent)
+    for (const item of res) {
+      const file = await FsFileItem.makeFromPath(item)
       if (!hidden && file.name.startsWith('.'))
         continue
 
@@ -279,29 +313,51 @@ export class File {
   /**
    * Get all of the files from the given directory (recursive).
    */
-  public static async allFiles(directory: string, hidden = false): Promise<FileItem[]> {
-    const res = await FileNative.readdir(directory, true)
-    if (!res)
-      throw new Error(`Could not read directory: ${directory}`)
-
-    const list = Array.prototype.concat(...res) as Dirent[]
-
-    const files = list.map((dirent) => {
-      const file = FileItem.makeFromDirent(dirent)
+  public static async allFiles(directory: string, hidden = false): Promise<FsFileItem[]> {
+    const list = await FsFileNative.readdir(directory, true)
+    const files = await Promise.all(list.map(async (item) => {
+      const file = await FsFileItem.makeFromPath(item)
       if (!hidden && !file.isHidden)
         return file
       else
         return file
-    })
+    }))
 
     return files
+  }
+
+  /**
+   * Filter FileItem to get only files with
+   */
+  public static async allFilesGlob({
+    directory,
+    hidden = false,
+    extensions = [],
+  }: {
+    directory: string
+    hidden?: boolean
+    extensions: string | string[]
+  }): Promise<FsFileItem[]> {
+    const files = await this.allFiles(directory, hidden)
+
+    if (typeof extensions === 'string')
+      extensions = [extensions]
+
+    const list = files.filter((file) => {
+      if (file.extension)
+        return extensions.includes(file.extension)
+
+      return false
+    })
+
+    return list
   }
 
   /**
    * Get all of the directories within a given directory.
    */
   public static async directories(directory: string): Promise<string[]> {
-    const files = await File.files(directory)
+    const files = await this.files(directory)
     if (!files)
       return []
 
@@ -327,9 +383,9 @@ export class File {
    */
   public static async makeDirectory(path: string, recursive = false): Promise<boolean> {
     // path: string, mode = 755, recursive = false, force = false
-    const isExists = await File.ensureDirectoryExists(path)
+    const isExists = await this.ensureDirectoryExists(path)
     if (!isExists)
-      return await FileNative.mkdir(path, recursive)
+      return await FsFileNative.mkdir(path, recursive)
 
     return false
   }
@@ -338,14 +394,14 @@ export class File {
    * Move a directory.
    */
   public static async moveDirectory(from: string, to: string): Promise<boolean> {
-    return await FileNative.rename(from, to)
+    return await FsFileNative.rename(from, to)
   }
 
   /**
    * Copy a directory from one location to another.
    */
   public static async copyDirectory(directory: string, destination: string): Promise<boolean> {
-    return await FileNative.copyDirectoryRecursive(directory, destination)
+    return await FsFileNative.copyDirectoryRecursive(directory, destination)
   }
 
   /**
@@ -354,19 +410,19 @@ export class File {
    * The directory itself may be optionally preserved.
    */
   public static async deleteDirectory(directory: string): Promise<boolean> {
-    return await FileNative.rm(directory)
+    return await FsFileNative.rm(directory)
   }
 
   /**
    * Remove all of the directories within a given directory.
    */
   public static async deleteDirectories(directory: string): Promise<boolean> {
-    const dirs = await File.directories(directory)
+    const dirs = await this.directories(directory)
     if (!dirs)
       return false
 
     for (const dir of dirs)
-      await File.deleteDirectory(dir)
+      await this.deleteDirectory(dir)
 
     return true
   }
@@ -375,13 +431,13 @@ export class File {
    * Empty the specified directory of all files and folders.
    */
   public static async cleanDirectory(directory: string): Promise<boolean> {
-    const files = await FileNative.readdir(directory)
+    const files = await FsFileNative.readdir(directory)
     if (!files)
       return false
 
     for (const file of files) {
-      const curPath = `${directory}/${file.name}`
-      await FileNative.rm(curPath)
+      const curPath = `${directory}/${file}`
+      await FsFileNative.rm(curPath)
     }
 
     return true
@@ -405,14 +461,28 @@ export class File {
     return array
   }
 
-  /**
-   * Get the size of a file in human readable format.
-   */
-  private static async bytesHuman(path: string): Promise<string> {
-    const stats = await FileNative.stat(path)
-    const bytes = stats.size
-    const i = bytes === 0 ? 0 : Math.floor(Math.log(bytes) / Math.log(1024))
-    const res = (bytes / 1024 ** i).toFixed(2)
-    return `${Number(res) * 1} ${['B', 'kB', 'MB', 'GB', 'TB'][i]}`
+  public static async stringExistsInFile(path: string, str: string): Promise<boolean> {
+    const data = (await this.get(path)).toString()
+    if (!data.includes(str))
+      return false
+
+    return true
+  }
+
+  public static async addToGitIgnore(ignore: string, path = '.gitignore'): Promise<void> {
+    const addToFile = async (path: string, content: string): Promise<void> => {
+      const inputData = await this.get(path)
+      if (!inputData.includes(content))
+        await FsFileNative.appendFile(path, content)
+    }
+
+    const ignoreFiles = async () => {
+      if (!await this.exists(path))
+        await this.put(path, '')
+
+      await addToFile(path, `\n${ignore}\n`)
+    }
+
+    await ignoreFiles()
   }
 }

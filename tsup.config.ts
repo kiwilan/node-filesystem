@@ -12,9 +12,9 @@ export default defineConfig({
   //   }
   // },
   dts: true,
-  minify: true,
-  treeshake: true,
-  splitting: true,
+  minify: false,
+  treeshake: false,
+  splitting: false,
   external: [
     'fastify',
     'esbuild',

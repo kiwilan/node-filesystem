@@ -1,4 +1,4 @@
-export class Str {
+export class FsStr {
   /**
    * Slugify a string.
    */
@@ -19,17 +19,17 @@ export class Str {
   }
 
   public static capitalizeAll(text: string): string {
-    return text.split(' ').map(word => Str.capitalize(word)).join(' ')
+    return text.split(' ').map(word => this.capitalize(word)).join(' ')
   }
 
   public static capitalizeWords(text: string): string {
-    return text.split(' ').map(word => Str.capitalize(word)).join(' ')
+    return text.split(' ').map(word => this.capitalize(word)).join(' ')
   }
 
   public static camelCase(text: string): string {
     return text
       .split(' ')
-      .map((word, index) => index === 0 ? word.toLowerCase() : Str.capitalize(word))
+      .map((word, index) => index === 0 ? word.toLowerCase() : this.capitalize(word))
       .join('')
   }
 }

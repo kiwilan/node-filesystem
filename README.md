@@ -23,8 +23,18 @@ pnpm add @kiwilan/filesystem
 
 //
 
-## Build
+## Build locally
 
 ```bash
-rm *.tgz ; pnpm build ; pnpm pack ; cp kiwilan-fastify-utils-*.tgz ~/kiwilan-fastify-utils-*.tgz
+pnpm package
+```
+
+Add to your project:
+
+```json
+{
+  "dependencies": {
+    "@kiwilan/filesystem": "file:~/kiwilan-filesystem-*.tgz"
+  }
+}
 ```

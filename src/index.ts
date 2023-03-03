@@ -1,11 +1,15 @@
-import { File } from './lib/File'
-import { FileItem } from './lib/FileItem'
-import { Path } from './lib/Path'
-import { Str } from './lib/Str'
+import { FsFile } from './lib/FsFile'
+import { FsFileNative } from './lib/FsFileNative'
+import { FsFileItem } from './lib/FsFileItem'
+import { FsPath } from './lib/FsPath'
+import { FsStr } from './lib/FsStr'
+
+export * from './types'
 
 export {
-  File,
-  FileItem,
-  Path,
-  Str,
+  FsFile,
+  FsFileNative,
+  FsFileItem,
+  FsPath,
+  FsStr,
 }

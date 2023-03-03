@@ -1,7 +1,7 @@
 import { dirname, join } from 'path'
 import { fileURLToPath } from 'url'
 
-export class Path {
+export class FsPath {
   private static getRoot() {
     return process.cwd()
   }
@@ -13,15 +13,18 @@ export class Path {
   /**
    * Get the absolute path of a file or directory relative to the root of the project.
    */
-  public static root(path: string): string {
-    return join(Path.getRoot(), path)
+  public static root(path?: string): string {
+    if (path)
+      return join(FsPath.getRoot(), path)
+
+    return FsPath.getRoot()
   }
 
   /**
    * Get the absolute path of a file or directory relative to the directory of the file that is importing this module.
    */
   public static package(path: string): string {
-    return join(Path.getDirname(), path)
+    return join(FsPath.getDirname(), path)
   }
 
   /**
@@ -37,7 +40,7 @@ export class Path {
    * Get the absolute path of a file or directory relative to the directory of the file that is importing this module.
    */
   public static dirname(metaUrl: string): string {
-    const __dirname = dirname(Path.filename(metaUrl))
+    const __dirname = dirname(FsPath.filename(metaUrl))
 
     return __dirname
   }

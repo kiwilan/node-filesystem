@@ -1,11 +1,26 @@
-import type { Dirent, Stats } from 'fs'
-import { access, chmod, constants, mkdir, readFile, readdir, rename, rm, stat, symlink, writeFile } from 'fs/promises'
+import type { Stats } from 'fs'
+import { access, appendFile, chmod, constants, mkdir, readFile, readdir, rename, rm, stat, symlink, writeFile } from 'fs/promises'
 import { basename, join, resolve } from 'path'
 
 export type FileContent = string | NodeJS.ArrayBufferView | Iterable<string | NodeJS.ArrayBufferView> | AsyncIterable<string | NodeJS.ArrayBufferView>
 
-export class FileNative {
-  public static async readFile(path: string): Promise<string | false> {
+export class FsFileNative {
+  public static async exists(path: string): Promise<boolean> {
+    const stat = await this.stat(path)
+    const isDir = stat?.isDirectory()
+    try {
+      if (isDir)
+        await access(path, constants.R_OK)
+      else
+        await readFile(path)
+      return true
+    }
+    catch (err) {
+      return false
+    }
+  }
+
+  public static async readFile(path: string): Promise<string> {
     try {
       const data = await readFile(path, { encoding: 'utf8' })
       return data
@@ -35,7 +50,7 @@ export class FileNative {
   public static async rm(path: string | string[]): Promise<boolean> {
     try {
       if (Array.isArray(path)) {
-        Promise.all(path.map(async (p) => {
+        await Promise.all(path.map(async (p) => {
           await rm(p, { recursive: true, force: true })
         }))
       }
@@ -51,16 +66,17 @@ export class FileNative {
     }
   }
 
-  public static async readdir(path: string, recursive = false): Promise<Dirent[]> {
+  public static async readdir(path: string, recursive = false): Promise<string[]> {
     try {
       if (recursive) {
-        const paths = await readdir(path, { withFileTypes: true })
-        const tempFiles = await Promise.all(paths.map((dirent) => {
-          const res = resolve(path, dirent.name)
-          if (dirent.isDirectory())
-            return FileNative.readdir(res, recursive)
+        const filesInDirectory = await readdir(path)
+        const tempFiles = await Promise.all(filesInDirectory.map(async (file) => {
+          const absolute = join(path, file)
+          const stats = await stat(absolute)
+          if (stats.isDirectory())
+            return FsFileNative.readdir(absolute, recursive)
           else
-            return dirent
+            return absolute
         }))
 
         if (!tempFiles)
@@ -69,7 +85,7 @@ export class FileNative {
         return Array.prototype.concat(...tempFiles)
       }
       else {
-        return await readdir(path, { withFileTypes: true })
+        return await readdir(path)
       }
     }
     catch (error) {
@@ -78,8 +94,13 @@ export class FileNative {
     }
   }
 
-  public static async stat(path: string): Promise<Stats> {
-    return await stat(path)
+  public static async stat(path: string): Promise<Stats | undefined> {
+    try {
+      return await stat(path)
+    }
+    catch (error) {
+      return undefined
+    }
   }
 
   public static basename(path: string): string {
@@ -132,7 +153,7 @@ export class FileNative {
       throw new Error(`Copy file, source file not found: ${source}`)
 
     const stat = await this.stat(target)
-    if (stat.isDirectory())
+    if (stat?.isDirectory())
       targetFile = join(target, basename(source))
 
     const success = await this.writeFile(targetFile, sourceContent)
@@ -151,20 +172,45 @@ export class FileNative {
       await mkdir(targetFolder)
 
     const statSource = await this.stat(source)
-    if (!statSource.isDirectory())
+    if (!statSource?.isDirectory())
       throw new Error(`Copy folder, source folder not found: ${source}`)
 
     const list = await this.readdir(source)
-    Promise.all(list.map(async (file) => {
-      const curSource = join(source, file.name)
+    await Promise.all(list.map(async (file) => {
+      const curSource = join(source, file)
       const statCurrent = await this.stat(curSource)
-      if (statCurrent.isDirectory())
+      if (statCurrent?.isDirectory())
         this.copyDirectoryRecursive(curSource, targetFolder)
       else
         this.copyFile(curSource, targetFolder)
     }))
 
     return true
+  }
+
+  public static async appendFile(path: string, content: string | Uint8Array): Promise<boolean> {
+    try {
+      await appendFile(path, content, { encoding: 'utf8' })
+      return true
+    }
+    catch (error) {
+      console.error(error)
+      throw new Error(`appendFile error: ${path}`)
+    }
+  }
+
+  public static async prependFile(path: string, content: string | Uint8Array): Promise<boolean> {
+    try {
+      const fileContent = await this.readFile(path)
+      const newContent = `${content}${fileContent}`
+
+      await this.writeFile(path, newContent)
+      return true
+    }
+    catch (error) {
+      console.error(error)
+      throw new Error(`prependFile error: ${path}`)
+    }
   }
 
   public static async chmod(path: string, mode = 777): Promise<boolean> {
@@ -207,5 +253,18 @@ export class FileNative {
       console.error(error)
       return false
     }
+  }
+
+  /**
+   * Get the size of a file in human readable format.
+   */
+  public static async bytesHuman(path: string): Promise<string> {
+    const stats = await FsFileNative.stat(path)
+    if (!stats)
+      return '0 B'
+    const bytes = stats.size
+    const i = bytes === 0 ? 0 : Math.floor(Math.log(bytes) / Math.log(1024))
+    const res = (bytes / 1024 ** i).toFixed(2)
+    return `${Number(res) * 1} ${['B', 'kB', 'MB', 'GB', 'TB'][i]}`
   }
 }
