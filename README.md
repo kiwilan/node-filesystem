@@ -5,7 +5,7 @@
 
 [![npm](https://img.shields.io/npm/v/@kiwilan/filesystem.svg?style=flat-square&color=CB3837&logo=npm&logoColor=ffffff&label=npm)](https://www.npmjs.com/package/@kiwilan/filesystem)
 
-This Node module has been built to improve native filesystem with [Laravel](https://laravel.com/) like helpers.
+This Node module has been built to improve [native filesystem](https://nodejs.org/api/fs.html) with [Laravel](https://laravel.com/) like helpers.
 
 ## Installation
 
