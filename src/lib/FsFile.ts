@@ -16,6 +16,13 @@ export class FsFile {
   }
 
   /**
+   * Get the contents of a file (not promise).
+   */
+  public static getNP(path: string): string {
+    return FsFileNative.readFileNP(path)
+  }
+
+  /**
    * Get the contents of a file.
    */
   public static async get(path: string): Promise<string> {

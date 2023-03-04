@@ -1,4 +1,5 @@
 import type { Stats } from 'fs'
+import { readFile as readFileNP } from 'fs'
 import { access, appendFile, chmod, constants, mkdir, readFile, readdir, rename, rm, stat, symlink, writeFile } from 'fs/promises'
 import { basename, join, resolve } from 'path'
 
@@ -18,6 +19,18 @@ export class FsFileNative {
     catch (err) {
       return false
     }
+  }
+
+  public static readFileNP(path: string): string {
+    let content = ''
+    readFileNP(path, { encoding: 'utf-8' }, (err, data) => {
+      if (err)
+        console.error(err)
+
+      content = data
+    })
+
+    return content
   }
 
   public static async readFile(path: string): Promise<string> {
