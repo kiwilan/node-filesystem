@@ -1,7 +1,7 @@
 import type { Stats } from 'fs'
 import { constants, readFile as readFileNP } from 'fs'
 import { access, appendFile, chmod, mkdir, readFile, readdir, rename, rm, stat, symlink, writeFile } from 'fs/promises'
-import { basename, join, resolve } from 'path'
+import { basename, join } from 'path'
 
 export type FileContent = string | NodeJS.ArrayBufferView | Iterable<string | NodeJS.ArrayBufferView> | AsyncIterable<string | NodeJS.ArrayBufferView>
 
@@ -122,9 +122,7 @@ export class FsFileNative {
 
   public static async mkdir(path: string, recursive = true): Promise<boolean> {
     try {
-      const __dirname = resolve()
-      path = path.replace(/^\.*\/|\/?[^\/]+\.[a-z]+|\/$/g, '')
-      await mkdir(resolve(__dirname, path), { recursive })
+      await mkdir(path, { recursive })
       return true
     }
     catch (error) {
