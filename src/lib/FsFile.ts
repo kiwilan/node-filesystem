@@ -437,13 +437,16 @@ export class FsFile {
   /**
    * Empty the specified directory of all files and folders.
    */
-  public static async cleanDirectory(directory: string): Promise<boolean> {
+  public static async cleanDirectory(directory: string, except: string[] = []): Promise<boolean> {
     const files = await FsFileNative.readdir(directory)
     if (!files)
       return false
 
     for (const file of files) {
       const curPath = `${directory}/${file}`
+      if (except.includes(file))
+        continue
+
       await FsFileNative.rm(curPath)
     }
 
