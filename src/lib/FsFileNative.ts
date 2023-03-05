@@ -1,6 +1,6 @@
 import type { Stats } from 'fs'
-import { readFile as readFileNP } from 'fs'
-import { access, appendFile, chmod, constants, mkdir, readFile, readdir, rename, rm, stat, symlink, writeFile } from 'fs/promises'
+import { constants, readFile as readFileNP } from 'fs'
+import { access, appendFile, chmod, mkdir, readFile, readdir, rename, rm, stat, symlink, writeFile } from 'fs/promises'
 import { basename, join, resolve } from 'path'
 
 export type FileContent = string | NodeJS.ArrayBufferView | Iterable<string | NodeJS.ArrayBufferView> | AsyncIterable<string | NodeJS.ArrayBufferView>
