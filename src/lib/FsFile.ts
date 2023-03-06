@@ -6,6 +6,7 @@ import type { ReplaceInFileBulk } from '../types'
 import type { FileContent } from './FsFileNative'
 import { FsFileNative } from './FsFileNative'
 import { FsFileItem } from './FsFileItem'
+import { FsPath } from './FsPath'
 
 export class FsFile {
   /**
@@ -480,6 +481,9 @@ export class FsFile {
   }
 
   public static async addToGitIgnore(ignore: string, path = '.gitignore'): Promise<void> {
+    const root = FsPath.root()
+    ignore = ignore.replace(root, '')
+
     const addToFile = async (path: string, content: string): Promise<void> => {
       const inputData = await this.get(path)
       if (!inputData.includes(content))
