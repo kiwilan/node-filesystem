@@ -24,10 +24,11 @@ jobs:
           version: 8.1.1
       - run: pnpm install
       - run: pnpm test
+      - run: pnpm coverage
 
       - name: Send code coverage
         uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          verbose: true
+          verbose: false
           files: ./coverage/clover.xml
