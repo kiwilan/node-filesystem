@@ -1,7 +1,7 @@
 import md5 from 'md5'
 import mime from 'mime-types'
 import type { GlobOptionsWithFileTypesUnset } from 'glob'
-import glob from 'glob'
+import { glob } from 'glob'
 import type { ReplaceInFileBulk } from '../types'
 import type { FileContent } from './FsFileNative'
 import { FsFileNative } from './FsFileNative'

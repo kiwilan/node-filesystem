@@ -1,7 +1,7 @@
 {
   "name": "@kiwilan/filesystem",
   "type": "module",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "description": "Node module to improve native filesystem with Laravel like helpers.",
   "author": "Ewilan Rivière <ewilan.riviere@gmail.com>",
   "license": "MIT",
@@ -44,17 +44,17 @@
     "package": "rm -f ./*.tgz ; rm -f ~/kiwilan-filesystem-*.tgz ; pnpm build ; pnpm pack ; cp kiwilan-filesystem-*.tgz ~/kiwilan-filesystem-*.tgz"
   },
   "dependencies": {
-    "glob": "^9.2.1",
+    "glob": "^10.1.0",
     "md5": "^2.3.0",
     "mime-types": "^2.1.35"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^0.36.0",
+    "@antfu/eslint-config": "^0.38.4",
     "@types/md5": "^2.3.2",
     "@types/mime-types": "^2.1.1",
-    "@types/node": "^18.14.6",
-    "eslint": "^8.35.0",
-    "tsup": "^6.6.3",
-    "typescript": "^4.9.5"
+    "@types/node": "^18.15.11",
+    "eslint": "^8.38.0",
+    "tsup": "^6.7.0",
+    "typescript": "^5.0.4"
   }
 }
