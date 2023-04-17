@@ -1,7 +1,7 @@
-import type { Stats } from 'fs'
-import { constants, readFile as readFileNP } from 'fs'
-import { access, appendFile, chmod, mkdir, readFile, readdir, rename, rm, stat, symlink, writeFile } from 'fs/promises'
-import { basename, join } from 'path'
+import type { Stats } from 'node:fs'
+import { constants, readFileSync as readFileNodeSync } from 'node:fs'
+import { access, appendFile, chmod, mkdir, readFile, readdir, rename, rm, stat, symlink, writeFile } from 'node:fs/promises'
+import { basename, join } from 'node:path'
 
 export type FileContent = string | NodeJS.ArrayBufferView | Iterable<string | NodeJS.ArrayBufferView> | AsyncIterable<string | NodeJS.ArrayBufferView>
 
@@ -21,16 +21,8 @@ export class FsFileNative {
     }
   }
 
-  public static readFileNP(path: string): string {
-    let content = ''
-    readFileNP(path, { encoding: 'utf-8' }, (err, data) => {
-      if (err)
-        console.error(err)
-
-      content = data
-    })
-
-    return content
+  public static readFileSync(path: string): string {
+    return readFileNodeSync(path, { encoding: 'utf8' })
   }
 
   public static async readFile(path: string): Promise<string> {

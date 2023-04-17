@@ -19,8 +19,8 @@ export class FsFile {
   /**
    * Get the contents of a file (not promise).
    */
-  public static getNP(path: string): string {
-    return FsFileNative.readFileNP(path)
+  public static getSync(path: string): string {
+    return FsFileNative.readFileSync(path)
   }
 
   /**
