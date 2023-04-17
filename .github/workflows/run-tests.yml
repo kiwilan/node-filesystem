@@ -25,9 +25,9 @@ jobs:
       - run: pnpm install
       - run: pnpm test
 
-      - name: on Linux send code coverage
-        if: runner.os == 'Linux'
+      - name: Send code coverage
         uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           verbose: false
+          files: ./coverage/clover.xml
