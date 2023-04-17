@@ -11,7 +11,7 @@ jobs:
         os: [ubuntu-latest]
         stability: [prefer-stable]
 
-    name: P${{ matrix.stability }} - ${{ matrix.os }}
+    name: ${{ matrix.stability }} - ${{ matrix.os }}
 
     steps:
       - uses: actions/checkout@v3
@@ -22,6 +22,7 @@ jobs:
       - uses: pnpm/action-setup@v2
         with:
           version: 8.1.1
+      - run: pnpm install
       - run: pnpm test
 
       - name: on Linux send code coverage
