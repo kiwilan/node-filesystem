@@ -49,13 +49,13 @@ Add to your project:
 }
 ```
 
-[version-src]: https://img.shields.io/npm/v/@kiwilan/filesystem.svg?style=flat-square&colorA=18181B&colorB=777BB4
+[version-src]: https://img.shields.io/npm/v/@kiwilan/filesystem.svg?style=flat-square&colorA=18181B&colorB=339933
 [version-href]: https://www.npmjs.com/package/@kiwilan/filesystem
-[node-version-src]: https://img.shields.io/static/v1?style=flat-square&label=Node.js&message=v16&color=777BB4&logo=node&logoColor=ffffff&labelColor=18181b
+[node-version-src]: https://img.shields.io/static/v1?style=flat-square&label=Node.js&message=v16&color=339933&logo=node&logoColor=ffffff&labelColor=18181b
 [node-version-href]: https://www.php.net/
-[downloads-src]: https://img.shields.io/npm/dt/@kiwilan/filesystem.svg?style=flat-square&colorA=18181B&colorB=777BB4
+[downloads-src]: https://img.shields.io/npm/dt/@kiwilan/filesystem.svg?style=flat-square&colorA=18181B&colorB=339933
 [downloads-href]: https://www.npmjs.com/package/@kiwilan/filesystem
-[license-src]: https://img.shields.io/github/license/kiwilan/node-filesystem.svg?style=flat-square&colorA=18181B&colorB=777BB4
+[license-src]: https://img.shields.io/github/license/kiwilan/node-filesystem.svg?style=flat-square&colorA=18181B&colorB=339933
 [license-href]: https://github.com/kiwilan/node-filesystem/blob/main/README.md
 [tests-src]: https://img.shields.io/github/actions/workflow/status/kiwilan/node-filesystem/run-tests.yml?branch=main&label=tests&style=flat-square&colorA=18181B
 [tests-href]: https://github.com/kiwilan/node-filesystem/actions/workflows/run-tests.yml
