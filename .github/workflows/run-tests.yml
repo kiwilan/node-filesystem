@@ -29,5 +29,5 @@ jobs:
         uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          verbose: false
+          verbose: true
           files: ./coverage/clover.xml
