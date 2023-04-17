@@ -20,7 +20,8 @@ jobs:
         with:
           node-version: "latest"
       - uses: pnpm/action-setup@v2
-      - run: pnpm install
+        with:
+          version: 8.1.1
       - run: pnpm test
 
       - name: on Linux send code coverage
