@@ -8,7 +8,7 @@
 [![tests][tests-src]][tests-href]
 [![codecov][codecov-src]][codecov-href]
 
-This Node module has been built to improve [native filesystem](https://nodejs.org/api/fs.html) with [Laravel](https://laravel.com/) like helpers.
+Node package built to improve [native filesystem](https://nodejs.org/api/fs.html) with [Laravel](https://laravel.com/) like helpers.
 
 ## Installation
 
