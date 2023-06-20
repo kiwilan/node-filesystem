@@ -1,10 +1,11 @@
 # Kiwilan's Node filesystem
 
+![Banner with monitor with IDE in background and Kiwilan's Node filesystem title](docs/banner.jpg)
+
 [![node][node-version-src]][node-version-href]
 [![version][version-src]][version-href]
 [![downloads][downloads-src]][downloads-href]
 [![license][license-src]][license-href]
-
 [![tests][tests-src]][tests-href]
 [![codecov][codecov-src]][codecov-href]
 
@@ -48,6 +49,8 @@ Add to your project:
   }
 }
 ```
+
+[<img src="https://user-images.githubusercontent.com/48261459/201463225-0a5a084e-df15-4b11-b1d2-40fafd3555cf.svg" height="120rem" width="100%" />](https://github.com/kiwilan)
 
 [version-src]: https://img.shields.io/npm/v/@kiwilan/filesystem.svg?style=flat-square&colorA=18181B&colorB=339933
 [version-href]: https://www.npmjs.com/package/@kiwilan/filesystem
