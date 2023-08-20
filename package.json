@@ -40,6 +40,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "package": "rm -f ./*.tgz ; rm -f ~/kiwilan-filesystem-*.tgz ; pnpm build ; pnpm pack ; cp kiwilan-filesystem-*.tgz ~/kiwilan-filesystem-*.tgz",
+    "release": "pnpm package ; pnpm publish --access public",
     "test": "vitest",
     "coverage": "vitest run --coverage"
   },
