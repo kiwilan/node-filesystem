@@ -59,9 +59,9 @@
       }
     },
     {
-      "label": "NPM deploy",
+      "label": "NPM release",
       "type": "shell",
-      "command": "pnpm build && npm publish --access public",
+      "command": "pnpm release",
       "problemMatcher": [],
       "presentation": {
         "reveal": "silent",
