@@ -118,7 +118,7 @@ export class FsFileNative {
       return true
     }
     catch (error) {
-      console.error(error)
+      // console.error(error)
       return false
     }
   }
@@ -253,7 +253,6 @@ export class FsFileNative {
       return true
     }
     catch (error) {
-      console.error(error)
       return false
     }
   }

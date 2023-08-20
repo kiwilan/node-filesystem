@@ -1,7 +1,7 @@
 {
   "name": "@kiwilan/filesystem",
   "type": "module",
-  "version": "0.0.18",
+  "version": "0.0.19",
   "description": "Node module to improve native filesystem with Laravel like helpers.",
   "author": "Ewilan Rivière <ewilan.riviere@gmail.com>",
   "license": "MIT",
