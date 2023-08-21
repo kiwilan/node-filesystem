@@ -298,6 +298,16 @@ export class FsFile {
   }
 
   /**
+   * Get an `FsFileItem` instance for the given path.
+   */
+  public static async file(path: string): Promise<FsFileItem> {
+    if (!await this.exists(path))
+      throw new Error(`File does not exist at path ${path}`)
+
+    return await FsFileItem.makeFromPath(path)
+  }
+
+  /**
    * Get an array of all files in a directory.
    */
   public static async files(directory: string, hidden = false): Promise<FsFileItem[]> {
